@@ -1,0 +1,63 @@
+rules_version = '2';
+// Gem ERP security rules. Paste into Firebase console > Firestore Database > Rules > Publish.
+// 1) Replace OWNER_EMAIL_HERE with the Google email of the business owner (lower case).
+// 2) Only people listed under companies/main/members can read or write company data.
+//    Accountants (view only) can read but not write. Only the owner can change the team.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null && request.auth.token.email_verified == true;
+    }
+    function myEmail() {
+      return request.auth.token.email.lower();
+    }
+    function memberDoc(cid) {
+      return /databases/$(database)/documents/companies/$(cid)/members/$(myEmail());
+    }
+    function isMember(cid) {
+      return signedIn() && exists(memberDoc(cid));
+    }
+    function role(cid) {
+      return get(memberDoc(cid)).data.role;
+    }
+    function canWrite(cid) {
+      return isMember(cid) && role(cid) in ['owner', 'manager', 'staff'];
+    }
+    function isOwner(cid) {
+      return isMember(cid) && role(cid) == 'owner';
+    }
+
+    match /companies/{cid} {
+      allow get: if signedIn();
+      // the very first owner creates the company
+      allow create: if signedIn()
+        && myEmail() in ['OWNER_EMAIL_HERE']
+        && request.resource.data.ownerEmail == myEmail();
+      allow update, delete: if isOwner(cid);
+
+      match /members/{email} {
+        allow get: if signedIn() && (email == myEmail() || isOwner(cid));
+        allow list: if isOwner(cid);
+        // the first owner adds themselves
+        allow create: if signedIn() && email == myEmail()
+          && request.resource.data.role == 'owner'
+          && get(/databases/$(database)/documents/companies/$(cid)).data.ownerEmail == myEmail();
+        allow write: if isOwner(cid);
+      }
+
+      match /data/{doc} {
+        allow read: if isMember(cid);
+        allow write: if canWrite(cid);
+      }
+      match /media/{doc} {
+        allow read: if isMember(cid);
+        allow write: if canWrite(cid);
+      }
+      match /mediaidx/{doc} {
+        allow read: if isMember(cid);
+        allow write: if canWrite(cid);
+      }
+    }
+  }
+}

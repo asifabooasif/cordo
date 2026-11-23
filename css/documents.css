@@ -1,0 +1,13 @@
+/* Gem ERP :: css/documents.css
+   Printed document headers and letterhead. */
+.docHead{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;margin-bottom:18px;border-bottom:1px solid #d9deea;position:relative}
+.docHead:after{content:"";position:absolute;left:0;bottom:-1px;width:72px;height:3px;background:var(--ac,#2a5bd7);border-radius:2px}
+.docHead .dhl{display:flex;gap:14px;align-items:center}.docHead img{height:52px;max-width:160px;object-fit:contain}
+.docHead b{display:block;font:700 20px/1.2 var(--disp,inherit);letter-spacing:-.01em}.docHead span{display:block;font-size:12px;opacity:.7;margin-top:3px}
+.docFoot{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px;padding-top:12px;border-top:1px solid #d9deea;font-size:12px;line-height:1.5}
+.docFoot small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;opacity:.6;margin-bottom:2px}.docFoot p{flex-basis:100%;margin:6px 0 0;text-align:center;font-size:11px;opacity:.6}
+@media print{@page{margin:14mm}*{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+dialog *{color:#14213d!important}dialog{font-size:12px;line-height:1.45}
+dialog table{border-collapse:collapse;width:100%}dialog th{background:#f1f4fa!important;font-size:10px;letter-spacing:.06em;text-transform:uppercase;text-align:left;padding:8px 10px;border-bottom:1.5px solid #14213d}
+dialog td{padding:8px 10px;border-bottom:1px solid #e3e8f2}dialog tr:nth-child(even) td{background:#fafbfe!important}dialog tr{break-inside:avoid}
+dialog h3{font:700 22px var(--disp,inherit);letter-spacing:-.01em;margin:0 0 8px}dialog .docHead:after{background:#2a5bd7!important}}

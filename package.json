@@ -1,0 +1,11 @@
+{
+  "name": "gem-erp",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Gem business ERP: static web app, no build step.",
+  "scripts": {
+    "start": "npx --yes serve . -l 8080",
+    "stamp": "node tools/stamp-sw.js",
+    "check": "node tools/check-syntax.js && node tools/test.js"
+  }
+}

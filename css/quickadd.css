@@ -1,0 +1,7 @@
+/* Gem ERP :: css/quickadd.css
+   Quick add button and shortcut menu. */
+.qa{position:fixed;right:22px;bottom:22px;z-index:40}html .qa>button.qb{background:var(--ac)!important;border:0!important;color:#fff!important;width:54px;height:54px;border-radius:50%;border:0;background:var(--ac);color:#fff;font:400 28px/1 var(--font,inherit);box-shadow:0 8px 24px rgba(20,33,61,.25);cursor:pointer;transition:transform .2s}
+.qa.o>button.qb{transform:rotate(45deg)}.qm{position:absolute;right:0;bottom:66px;min-width:230px;background:var(--s);border:1px solid var(--bd);border-radius:16px;padding:6px;box-shadow:0 12px 32px rgba(20,33,61,.18);display:none}
+.qa.o .qm{display:block}.qm button{display:flex;justify-content:space-between;align-items:center;width:100%;border:0;background:none;color:var(--t);padding:10px 12px;border-radius:10px;font:500 14px var(--font,inherit);cursor:pointer;text-align:left}
+.qm button:hover{background:var(--acs)}.qm kbd{font:600 11px var(--font,inherit);background:var(--s2);border:1px solid var(--bd);border-radius:6px;padding:2px 7px;color:var(--t3)}
+@media(max-width:800px){.qa{bottom:84px;right:14px}}@media print{.qa{display:none!important}}

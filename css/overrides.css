@@ -1,0 +1,3 @@
+/* Gem ERP :: css/overrides.css
+   Small overrides loaded after the base styles. */
+button.b1:not(.ni):not(.nh):not(.bell){background:var(--ac);border-color:var(--ac);color:#fff}button.b1:not(.ni):not(.nh):not(.bell):hover{background:var(--acd,#1f4cc0);border-color:var(--acd,#1f4cc0);color:#fff}

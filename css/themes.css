@@ -1,0 +1,46 @@
+/* Gem ERP :: css/themes.css
+   More looks (Linen, Mocha, Midnight), sign-in screen, account pill, toast, photo viewer, view-only mode and small polish. */
+html:root[data-look=linen]{--bg:#f6efe3;--s:#fffaf0;--s2:#efe4d0;--bd:#e6d8bf;--t:#33261a;--t3:#85705a;--ac:#b0763a;--acs:#f6e6cb;--acd:#7d4f1d;--g:#3f8062;--r:#c4452f;--sb:#fbf4e6}
+html:root[data-look=mocha]{--bg:#1d1712;--s:#272019;--s2:#31281f;--bd:#3d3226;--t:#f3e8d6;--t3:#b3a187;--ac:#d9b06f;--acs:#3a2f21;--acd:#f0cf9d;--g:#6fcf9c;--r:#f08470;--sb:#221b15;color-scheme:dark}
+html:root[data-look=midnight]{--bg:#0b1220;--s:#121b2e;--s2:#182440;--bd:#243253;--t:#e8eefc;--t3:#93a4c8;--ac:#6ea0ff;--acs:#1b2a4d;--acd:#a9c6ff;--g:#4fd1a1;--r:#ff7b7b;--sb:#0f1729;color-scheme:dark}
+html:root[data-look=linen] body,html:root[data-look=linen] .main{background-image:radial-gradient(#e6d8bf 1px,transparent 1px);background-size:26px 26px;background-color:var(--bg)}
+html:root[data-look=linen] .card,html:root[data-look=linen] .kp,html:root[data-look=linen] .hero{border-radius:24px}
+html:root[data-look=mocha] .sb,html:root[data-look=midnight] .sb,html:root[data-look=mocha] .ni,html:root[data-look=midnight] .ni,html:root[data-look=mocha] .brand,html:root[data-look=midnight] .brand{color:var(--t3)}
+html:root[data-look=mocha] .ni:hover,html:root[data-look=midnight] .ni:hover,html:root[data-look=mocha] .brand,html:root[data-look=midnight] .brand{color:var(--t)}
+html:root[data-look=mocha] .ni.on,html:root[data-look=midnight] .ni.on{background:var(--acs);color:var(--acd)}
+html:root[data-look=mocha] .card,html:root[data-look=midnight] .card,html:root[data-look=mocha] .k,html:root[data-look=midnight] .k,html:root[data-look=mocha] .hero,html:root[data-look=midnight] .hero{border-color:var(--bd)}
+html:root[data-look=mocha] th,html:root[data-look=midnight] th{color:var(--t3)}
+html:root[data-look=mocha] input,html:root[data-look=mocha] select,html:root[data-look=mocha] textarea,html:root[data-look=midnight] input,html:root[data-look=midnight] select,html:root[data-look=midnight] textarea{background:var(--s2);color:var(--t);border-color:var(--bd)}
+html:root[data-look=mocha] dialog,html:root[data-look=midnight] dialog{background:var(--s);color:var(--t)}
+html:root[data-look=mocha] .bn,html:root[data-look=midnight] .bn{background:var(--s);border-color:var(--bd)}
+html:root[data-look=mocha] .bn button,html:root[data-look=midnight] .bn button{color:var(--t3)}
+html:root[data-look=mocha] .tp,html:root[data-look=midnight] .tp,html:root[data-look=mocha] .qm,html:root[data-look=midnight] .qm{background:var(--s);border-color:var(--bd)}
+html:root[data-look=mocha] .b1,html:root[data-look=midnight] .b1{color:#1b1209!important}
+html:root[data-look=mocha] .hero,html:root[data-look=midnight] .hero{background:linear-gradient(120deg,var(--s) 40%,color-mix(in srgb,var(--gm) 22%,var(--s)))}
+/* sign-in screen */
+#gate{position:fixed;inset:0;z-index:200;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#efe4d0,#f6efe3 45%,#e9dcc4);padding:20px}
+.gcard{width:min(400px,100%);background:#fffdf8;border:1px solid #e6d8bf;border-radius:28px;padding:34px 28px;text-align:center;box-shadow:0 30px 80px -30px #5a3a1a66;color:#33261a}
+.gcard h2{font-family:var(--disp,inherit);font-size:26px;margin:4px 0 12px}.gcard .glogo{font-size:40px;color:#b0763a;animation:glow 2.4s ease-in-out infinite}.gcard p{margin:8px 0}.gcard .m{color:#85705a}
+.gcard .big{width:100%;padding:12px;font-size:15px;margin-top:10px;background:#b0763a;border-color:#b0763a;color:#fff}.gcard .link{border:0;background:none;color:#85705a;text-decoration:underline;margin-top:14px;font-size:13px;min-height:0}
+.gcard .bar{justify-content:center;margin-top:10px}.gcard .bad{color:#c4452f}
+.spin{width:28px;height:28px;margin:14px auto 0;border:3px solid #e6d8bf;border-top-color:#b0763a;border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes glow{50%{transform:scale(1.08);filter:drop-shadow(0 0 12px #d9b06f)}}
+/* account pill (sidebar) */
+#cpill{display:flex;flex-direction:column;align-items:flex-start;gap:1px;width:100%;margin-top:12px;text-align:left;border-radius:16px!important;padding:9px 12px;background:var(--s2);border:1px solid var(--bd);font-size:12px;min-height:0}
+#cpill span{font-size:15px}#cpill b{font-size:12.5px;color:var(--t)}#cpill small{color:var(--t3);font-size:11px;word-break:break-all}
+#cpill.error{border-color:var(--r)}#cpill.synced b{color:var(--g)}
+/* toast */
+#toast{position:fixed;left:50%;bottom:90px;transform:translate(-50%,20px);background:#1a1533;color:#fff;padding:10px 16px;border-radius:14px;font-size:13px;opacity:0;pointer-events:none;transition:.25s;z-index:90;max-width:90vw}#toast.on{opacity:1;transform:translate(-50%,0)}
+/* photos */
+.pgal{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}.pg{position:relative}.pg img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:14px;border:1px solid var(--bd);cursor:zoom-in}
+.pg span{display:flex;gap:4px;justify-content:center;margin-top:4px;font-size:11px;color:var(--t3)}.pg .sm{padding:2px 8px;min-height:0;font-size:11px}
+label.up{border:1px solid var(--bd);border-radius:999px;padding:5px 12px;cursor:pointer;display:inline-block}label.up:hover{border-color:var(--ac);color:var(--ac)}
+#lbx{display:none;position:fixed;inset:0;z-index:150;background:#000d;overflow:auto;place-items:center}#lbx.on{display:grid}#lbx img{max-width:94vw;max-height:90vh;cursor:zoom-in;border-radius:12px}#lbx img.z{max-width:none;max-height:none;width:min(1600px,220vw);cursor:zoom-out}
+#lbx button{position:fixed;right:16px;top:16px;border-radius:50%;width:40px;height:40px;padding:0}
+/* view-only role and small polish */
+body.ro .qa,body.ro .bar .b1{display:none!important}
+#pg>*{animation:fadeUp .28s ease both}@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.skel{background:linear-gradient(90deg,var(--s2) 25%,var(--bd) 50%,var(--s2) 75%);background-size:200% 100%;animation:shim 1.2s infinite;border-radius:10px;min-height:16px}@keyframes shim{to{background-position:-200% 0}}
+.camBtn{background:var(--acs)}
+@media print{#gate,#cpill,#toast,#lbx{display:none!important}}
+html:root[data-look=mocha] #live,html:root[data-look=midnight] #live,html:root[data-look=mocha] .bell,html:root[data-look=midnight] .bell{background:var(--s);color:var(--t);border-color:var(--bd)}

@@ -1,0 +1,5 @@
+/* Gem ERP :: modules/company.js
+   Company details, logo and the letterhead used on printed documents. */
+function coSet(k,v){D.co=D.co||{};D.co[k]=v;save()}
+function coLogo(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const m=new Image();m.onload=()=>{const k=Math.min(1,320/Math.max(m.width,m.height)),c=document.createElement('canvas');c.width=m.width*k;c.height=m.height*k;const x=c.getContext('2d');x.fillStyle='#fff';x.fillRect(0,0,c.width,c.height);x.drawImage(m,0,0,c.width,c.height);coSet('logo',c.toDataURL('image/jpeg',.8));go()};m.src=r.result};r.readAsDataURL(f)}
+const lh=()=>{const c=D.co||{};if(!c.name&&!c.logo)return'';return`<div class=\"lh docHead\"><div class=\"dhl\">${c.logo?`<img src=\"${c.logo}\" alt=\"\">`:''}<div><b>${e(c.name||'')}</b><span>${[c.address,c.phone,c.email].filter(Boolean).map(e).join(' &middot; ')}</span></div></div><i class=\"dhr\"></i></div>`},lf=()=>{const c=D.co||{};if(!c.bank&&!c.terms)return'';return`<div class=\"lh docFoot\">${c.bank?`<div><small>Bank details</small>${e(c.bank)}</div>`:''}${c.terms?`<div><small>Terms</small>${e(c.terms)}</div>`:''}<p>Thank you for your business</p></div>`};

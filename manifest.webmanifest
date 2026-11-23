@@ -1,0 +1,50 @@
+{
+  "name": "Gem ERP",
+  "short_name": "Gem ERP",
+  "description": "Stock, sales, cutting, cash book and reports for a gem business.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fafaff",
+  "theme_color": "#2a5bd7",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New sale",
+      "url": "./#sales"
+    },
+    {
+      "name": "Gem stock",
+      "url": "./#stock"
+    },
+    {
+      "name": "Cash book",
+      "url": "./#cash"
+    }
+  ]
+}
