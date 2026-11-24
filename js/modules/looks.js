@@ -1,8 +1,8 @@
 /* Gem ERP :: modules/looks.js
    Colour looks and the sidebar look switcher. */
 (function(){
-const root=document.documentElement,LK=[['pearl','Pearl','#2a5bd7'],['sand','Sand','#c9a56a'],['jade','Jade','#0f8a68'],['linen','Linen','#b0763a'],['mocha','Mocha','#3a2f21'],['midnight','Midnight','#6ea0ff']];
-let cur='pearl';try{cur=localStorage.getItem('gem_look')||'pearl'}catch(x){}
+const root=document.documentElement,LK=[['nova','Nova','#5b9bff'],['aurora','Aurora','#8a5cf6'],['pearl','Pearl','#2a5bd7'],['sand','Sand','#c9a56a'],['jade','Jade','#0f8a68'],['linen','Linen','#b0763a'],['mocha','Mocha','#3a2f21'],['midnight','Midnight','#6ea0ff']];
+let cur='nova';try{cur=localStorage.getItem('gem_look')||'nova'}catch(x){}
 const setLook=k=>{cur=k;root.setAttribute('data-look',k);try{localStorage.setItem('gem_look',k)}catch(x){}document.querySelectorAll('.looks button').forEach(b=>b.classList.toggle('on',b.dataset.k==k))};
 root.setAttribute('data-look',cur);
 const sb=document.querySelector('.sb');if(sb){const d=document.createElement('div');d.className='looks';d.innerHTML='<span>Look</span>'+LK.map(l=>`<button title="${l[1]}" data-k="${l[0]}" style="background:${l[2]}" class="${l[0]==cur?'on':''}"></button>`).join('');d.onclick=ev=>{const b=ev.target.closest('button');if(b)setLook(b.dataset.k)};sb.appendChild(d)}

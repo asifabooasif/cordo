@@ -1,7 +1,12 @@
 /* Gem ERP :: modules/system.js
    System Health page (storage, restore points, cloud status, problem log, what's new), error capture and the first-run setup. */
-const APP_VERSION='2.4.0';
+const APP_VERSION='3.0.0';
 const CHANGES=[
+ ['3.0.0','New look: Nova (dark) and Aurora (light), fonts stored inside the app, animated charts and illustrations.'],
+ ['3.0.0','New menu: seven groups with icons and dropdown sections, breadcrumb dropdowns, an overview page per group, pinned pages, a New menu, Ctrl+K command palette and keyboard shortcuts.'],
+ ['3.0.0','Command Center dashboard with trend lines, 12-month chart, receivables ageing, stock mix and quick actions.'],
+ ['3.0.0','Guardian: live safety score, 25 automatic checks on books, activity and backups, daily tamper-evident seals, and a restore point before bulk price changes.'],
+ ['3.0.0','Printing fixed: labels and documents no longer print on a grey page; label paper choice (A4 sheet or roll).'],
  ['2.4.0','Numbered payment receipts (print or WhatsApp) with the amount in words, listed on every invoice.'],
  ['2.4.0','Recurring expenses (rent, salaries) that you post with one tap when due, customer birthdays and VIP tags with WhatsApp greetings, and commission per salesperson.'],
  ['2.4.0','Data Quality score with the exact items to fix, search that also finds documents and tasks, and an automatic follow-up task for every quotation.'],

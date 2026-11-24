@@ -1,0 +1,16 @@
+/* Gem ERP :: css/print.css
+   Printing. Fixes labels and documents that opened in a pop-up: the pop-up frame, shadow and grey backdrop are removed
+   so the paper shows only the label, invoice or report. Loaded last. */
+@media print{
+ html:root:root[data-look]{color-scheme:light!important;background:#fff!important}html:root[data-look] body{background:#fff!important;background-image:none!important}
+ html,body{background:#fff!important;color:#000!important}
+ .app,.top,.sb,.bn,.qa,#live,#toast,.dd,#gate,#lockscr,.noprint{display:none!important}
+ dialog[open]{display:block!important;position:static!important;inset:auto!important;transform:none!important;margin:0!important;width:100%!important;max-width:none!important;height:auto!important;max-height:none!important;overflow:visible!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:#fff!important;color:#000!important;animation:none!important}
+ dialog::backdrop{background:none!important;display:none!important}
+ dialog.pal{display:none!important}
+ .lb{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(54mm,1fr));gap:3mm}
+ .lab{width:auto!important;border:1px solid #000!important;border-radius:0;padding:2mm!important;break-inside:avoid;page-break-inside:avoid;color:#000!important;background:#fff!important}
+ .lab svg{margin:1mm auto!important}
+ body.lbl-roll .lb{display:block!important}body.lbl-roll .lab{width:100%!important;height:100vh;display:flex;flex-direction:column;justify-content:center;border:0!important;page-break-after:always}
+}
+.lbopt{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}.lbopt label{display:flex;align-items:center;gap:6px;color:var(--t3);font-size:12.5px}

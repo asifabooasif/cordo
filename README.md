@@ -3,6 +3,18 @@
 Stock, purchases, sales, memo, cutting jobs, cash book, reports and now cloud sync for a gem business.
 Runs in the browser, works offline, installs on a phone. No build step.
 
+## Version 3.0
+
+New files: `css/fonts.css`, `css/nova.css`, `css/screens.css`, `css/print.css`, the `fonts/` folder, `js/core/icons.js`, `illus.js`, `viz.js`, `guard.js`, and `js/modules/guardian.js`, `command.js`, `menu.js`.
+Changed files: `index.html`, `sw.js`, `package.json`, `README.md`, `css/base.css`, `js/core/router.js`, `boot.js`, `access.js`, `js/modules/looks.js`, `stock.js`, `system.js`, `tools/test.js`.
+`firestore.rules` did not change.
+
+- **Nova and Aurora looks**, fonts stored inside the app, animated charts and illustrations.
+- **Grouped menu** with dropdown sections, breadcrumb dropdowns, overview pages, pinned pages, a New menu, Ctrl+K command palette and keyboard shortcuts (press `?`).
+- **Command Center** dashboard.
+- **Guardian** (System → Guardian): 25 automatic checks, a 0-100 score, daily tamper-evident seals, and a restore point before bulk price changes.
+- **Printing fix**: labels and documents no longer print on a grey page; label paper can be an A4 sheet or a one-label-per-page roll.
+
 ## What is new in 2.0
 - **Safe storage**: data lives in IndexedDB (no 5 MB limit), photos in their own store, a restore point every day (System Health).
 - **Google sign-in + Firebase sync** across phone and computer, offline-first, with merge of records added at the same time.

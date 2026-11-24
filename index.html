@@ -2,23 +2,24 @@
 <html lang="en"><head><meta charset="utf-8"><title>Gem ERP</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Gem ERP: stock, purchases, sales, cutting jobs, cash book and reports for a gem business.">
-<meta name="theme-color" content="#2a5bd7">
+<meta name="theme-color" content="#070b16">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Gem ERP">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=DM+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/documents.css">
 <link rel="stylesheet" href="css/quickadd.css">
 <link rel="stylesheet" href="css/overrides.css">
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/people.css">
+<link rel="stylesheet" href="css/nova.css">
+<link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/print.css">
 </head><body>
-<div class="app"><div class="sb"><div class="brand">&#9670; Gem ERP</div><div id="nav"></div></div><div class="main" id="pg"></div></div>
-<div class="tb" id="tb"></div><div class="bn"><button data-k="dashboard" onclick="location.hash='dashboard';closeMenu()"><b>🏠</b>Home</button><button data-k="stock" onclick="location.hash='stock';closeMenu()"><b>💎</b>Stock</button><button data-k="sales" onclick="location.hash='sales';closeMenu()"><b>🧾</b>Sales</button><button onclick="closeMenu();gsearch()"><b>🔍</b>Search</button><button id="mbtn" onclick="document.body.classList.toggle('mnav')"><b>☰</b>Menu</button></div>
+<div class="app"><div class="sb"><div class="brand">&#9670; Gem ERP</div><div class="sbf"><input id="mf" type="search" placeholder="Filter menu…" aria-label="Filter menu" oninput="Menu.filter(this.value)"></div><div id="nav"></div></div><div class="col"><header class="top" id="top"><button class="mb2" aria-label="Menu" onclick="document.body.classList.toggle('mnav')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><nav class="crumb" id="crumb" aria-label="Breadcrumb"></nav><div class="tsp"></div><button class="tsearch" onclick="Menu.palOpen()" aria-label="Search"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M11 18a7 7 0 100-14 7 7 0 000 14zM21 21l-4.5-4.5"/></svg><span>Search or jump to…</span><kbd>Ctrl K</kbd></button><button class="tadd" onclick="Menu.ddQuick(this)" aria-haspopup="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><span>New</span></button><span id="gshw"></span><div class="tb" id="bellbox"></div><span id="tuser"></span></header><div class="main" id="pg"></div></div></div><div class="bn"><button data-k="dashboard" onclick="location.hash='dashboard';closeMenu()"><b>🏠</b>Home</button><button data-k="stock" onclick="location.hash='stock';closeMenu()"><b>💎</b>Stock</button><button data-k="sales" onclick="location.hash='sales';closeMenu()"><b>🧾</b>Sales</button><button onclick="closeMenu();gsearch()"><b>🔍</b>Search</button><button id="mbtn" onclick="document.body.classList.toggle('mnav')"><b>☰</b>Menu</button></div>
 <dialog id="dlg"></dialog>
 <noscript>Gem ERP needs JavaScript. Please turn it on in your browser.</noscript>
 <script type="text/gem-script" src="js/core/firebase-config.js"></script>
@@ -31,6 +32,10 @@
 <script type="text/gem-script" src="js/core/data.js"></script>
 <script type="text/gem-script" src="js/core/ui.js"></script>
 <script type="text/gem-script" src="js/core/charts.js"></script>
+<script type="text/gem-script" src="js/core/icons.js"></script>
+<script type="text/gem-script" src="js/core/illus.js"></script>
+<script type="text/gem-script" src="js/core/viz.js"></script>
+<script type="text/gem-script" src="js/core/guard.js"></script>
 <script type="text/gem-script" src="js/core/router.js"></script>
 <script type="text/gem-script" src="js/modules/activity.js"></script>
 <script type="text/gem-script" src="js/modules/ageing.js"></script>
@@ -94,6 +99,9 @@
 <script type="text/gem-script" src="js/modules/looks.js"></script>
 <script type="text/gem-script" src="js/modules/quickadd.js"></script>
 <script type="text/gem-script" src="js/modules/people.js"></script>
+<script type="text/gem-script" src="js/modules/guardian.js"></script>
+<script type="text/gem-script" src="js/modules/command.js"></script>
+<script type="text/gem-script" src="js/modules/menu.js"></script>
 <script type="text/gem-script" src="js/core/pwa.js"></script>
 <script type="text/gem-script" src="js/core/boot.js"></script>
 <script src="js/core/loader.js"></script>

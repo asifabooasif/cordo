@@ -39,7 +39,7 @@ h1{font-family:var(--disp);font-size:30px;font-weight:700;letter-spacing:-.03em;
 .card{border:1px solid var(--bd);border-radius:20px;box-shadow:none;padding:20px;margin-bottom:18px}
 th{text-transform:none;letter-spacing:0;font-size:12px;font-weight:600;color:var(--t3);padding:10px 8px}td{padding:10px 8px}tr:hover td{background:#f8faff}
 button,input,select{border-radius:12px;border-color:var(--bd)}input:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px #2a5bd726}
-button:not(.ni):not(.nh):not(.bell){border-radius:999px;background:var(--s);transition:background .15s,border-color .15s,transform .1s}button:not(.ni):not(.nh):not(.bell):not(.b1):hover{border-color:var(--ac);color:var(--ac)}button:not(.ni):not(.nh):not(.bell):active{transform:scale(.97)}
+button:where(:not(.ni):not(.nh):not(.bell)){border-radius:999px;background:var(--s);transition:background .15s,border-color .15s,transform .1s}button:where(:not(.ni):not(.nh):not(.bell)):not(.b1):hover{border-color:var(--ac);color:var(--ac)}button:where(:not(.ni):not(.nh):not(.bell)):active{transform:scale(.97)}
 .b1{background:var(--ac);border-color:var(--ac);color:#fff;font-weight:600}.b1:hover{background:#1f4cc0;color:#fff}.sm{padding:4px 11px}
 .tag{border-radius:999px;background:var(--acs);color:#1b3fa8;font-weight:600}.tag.s{background:#dff5ec;color:#0a7a5a}.tag.o{background:#fff1d9;color:#9a5b00}
 .hb{margin:8px 0}.hb i{height:12px;border-radius:99px;background:var(--ac)}

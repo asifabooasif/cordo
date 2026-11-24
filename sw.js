@@ -1,15 +1,19 @@
 /* Gem ERP service worker.
    Makes the app open offline. VERSION and ASSETS are rewritten by tools/stamp-sw.js,
    so every change to a file gives a new cache and users get the update banner. */
-const VERSION = 'gem-erp-0e496e9f63';
+const VERSION = 'gem-erp-093c7439f9';
 /* ASSETS:BEGIN */
 const ASSETS = [
   './',
   'css/base.css',
   'css/documents.css',
+  'css/fonts.css',
+  'css/nova.css',
   'css/overrides.css',
   'css/people.css',
+  'css/print.css',
   'css/quickadd.css',
+  'css/screens.css',
   'css/themes.css',
   'icons/apple-touch-icon.png',
   'icons/icon-192.png',
@@ -25,6 +29,9 @@ const ASSETS = [
   'js/core/constants.js',
   'js/core/data.js',
   'js/core/firebase-config.js',
+  'js/core/guard.js',
+  'js/core/icons.js',
+  'js/core/illus.js',
   'js/core/loader.js',
   'js/core/pwa.js',
   'js/core/router.js',
@@ -32,6 +39,7 @@ const ASSETS = [
   'js/core/syncutil.js',
   'js/core/ui.js',
   'js/core/utils.js',
+  'js/core/viz.js',
   'js/core/xlsx.js',
   'js/modules/activity.js',
   'js/modules/ageing.js',
@@ -47,6 +55,7 @@ const ASSETS = [
   'js/modules/closing.js',
   'js/modules/cloud.js',
   'js/modules/collections.js',
+  'js/modules/command.js',
   'js/modules/company.js',
   'js/modules/custody.js',
   'js/modules/customers.js',
@@ -58,6 +67,7 @@ const ASSETS = [
   'js/modules/exportdocs.js',
   'js/modules/financial.js',
   'js/modules/gems.js',
+  'js/modules/guardian.js',
   'js/modules/guide.js',
   'js/modules/importer.js',
   'js/modules/insights.js',
@@ -67,6 +77,7 @@ const ASSETS = [
   'js/modules/lock.js',
   'js/modules/looks.js',
   'js/modules/memo.js',
+  'js/modules/menu.js',
   'js/modules/parties.js',
   'js/modules/partners.js',
   'js/modules/paycal.js',

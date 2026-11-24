@@ -8,4 +8,6 @@ Cloud.start().then(()=>{
   GemStore.Snap.auto().catch(()=>{});
   Cloud.pill();
   if(typeof lockInit=='function')lockInit();
+  if(typeof Guardian!='undefined')Guardian.start();
+  if(typeof Menu!='undefined')setTimeout(()=>Menu.welcome(),1500);
 });

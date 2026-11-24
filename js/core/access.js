@@ -5,7 +5,7 @@
 const ROLES={owner:'Owner',manager:'Manager',staff:'Sales staff',accountant:'Accountant (view only)'};
 (function(){
 const BLOCK={
-  staff:['finrep','proof','check','purchases','expenses','cheques','collections','paycal','cash','daily','period','reports','trends','closing','suppliers','customers','insights','partners','backup','log','team','analytics','yield','jobs','system','audit','import','cashcount','bankrec','salesteam','insurance','recurring'],
+  staff:['finrep','proof','check','purchases','expenses','cheques','collections','paycal','cash','daily','period','reports','trends','closing','suppliers','customers','insights','partners','backup','log','team','analytics','yield','jobs','system','audit','import','cashcount','bankrec','salesteam','insurance','recurring','guardian'],
   manager:['team'],
   accountant:['import','team']
 };

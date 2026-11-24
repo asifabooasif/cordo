@@ -37,6 +37,27 @@ t('bank matching never uses one book entry twice',()=>{const r=C.matchBank([{i:0
 t('amount in words',()=>{assert.strictEqual(C.words(0),'zero');assert.strictEqual(C.words(21),'twenty-one');assert.strictEqual(C.words(105),'one hundred and five');assert.strictEqual(C.words(50000),'fifty thousand');assert.strictEqual(C.words(1250300),'one million two hundred and fifty thousand three hundred');assert.strictEqual(C.words(1000001),'one million and one')});
 t('next birthday this year or next, with age',()=>{let r=C.nextBirthday('1980-12-25','2026-11-24');assert.deepStrictEqual([r.date,r.days,r.age],['2026-12-25',31,46]);r=C.nextBirthday('1990-03-01','2026-11-24');assert.deepStrictEqual([r.date,r.age],['2027-03-01',37]);r=C.nextBirthday('1990-11-24','2026-11-24');assert.strictEqual(r.days,0)});
 t('recurring expense is due once a month from its day',()=>{assert.ok(C.recurDue({day:5,last:'2026-10'},'2026-11-05'));assert.ok(!C.recurDue({day:5,last:'2026-10'},'2026-11-04'));assert.ok(!C.recurDue({day:5,last:'2026-11'},'2026-11-20'));assert.ok(!C.recurDue({day:5,active:false},'2026-11-20'))});
+
+/* Guardian */
+const GG=require(path.join(root,'js/core/guard.js')),nodeSha=async t=>require('crypto').createHash('sha256').update(t).digest('hex');
+const gbase=()=>({stones:[{id:'a',code:'G1',status:'Sold',cost:100,price:200},{id:'b',code:'G2',status:'In stock',cost:100,price:200}],sales:[{id:'s1',no:'INV-1',date:'2026-11-20',items:[{stone:'a',price:200}],disc:0,paid:200}],cash:[{acct:'Cash',type:'In',amt:200}],void:[],parties:[],purchases:[]});
+const gscan=(D,x)=>GG.scan(Object.assign({D,now:Date.parse('2026-11-24T10:00:00Z'),audit:[],errors:[],snaps:[{at:'2026-11-24T08:00:00Z'}],env:{bkAge:1,usageP:5,pinSet:true}},x||{}));
+t('guardian: clean books score 100',()=>{const r=gscan(gbase());assert.strictEqual(r.score,100);assert.strictEqual(r.level,'ok')});
+t('guardian: finds a stone sold twice, duplicate invoice number and overpayment',()=>{const D=gbase();D.sales.push({id:'s2',no:'INV-1',date:'2026-11-21',items:[{stone:'a',price:200}],disc:0,paid:900});const ids=gscan(D).findings.map(f=>f.id);['double-sold','dup-invoice','overpaid'].forEach(i=>assert.ok(ids.includes(i),i))});
+t('guardian: invoice pointing at a deleted stone is urgent',()=>{const D=gbase();D.sales[0].items[0].stone='gone';const f=gscan(D).findings.find(f=>f.id==='missing-stone');assert.strictEqual(f.sev,'bad')});
+t('guardian: mass delete within an hour is urgent, spread-out deletes are not',()=>{const mk=(i,m)=>({op:'delete',u:'x@y',k:'stones',t:new Date(Date.parse('2026-11-23T10:00:00Z')+m*6e4).toISOString(),l:'s'+i});const A=Array.from({length:12},(_,i)=>mk(i,i));assert.ok(gscan(gbase(),{audit:A}).findings.some(f=>f.id==='mass-delete'));const B=Array.from({length:12},(_,i)=>mk(i,i*120));assert.ok(!gscan(gbase(),{audit:B}).findings.some(f=>f.id==='mass-delete'))});
+t('guardian: old backup and missing restore points are flagged',()=>{const r=gscan(gbase(),{snaps:[],env:{bkAge:45,usageP:5,pinSet:true}});const ids=r.findings.map(f=>f.id);assert.ok(ids.includes('backup')&&ids.includes('restore-point'));assert.strictEqual(r.findings.find(f=>f.id==='backup').sev,'bad')});
+t('guardian: score drops with urgent items and never goes below 0',()=>{const D=gbase();D.sales[0].items[0].stone='gone';D.sales[0].paid=9e9;const r=gscan(D,{snaps:[],env:{bkAge:60,usageP:95,pinSet:false}});assert.ok(r.score<70&&r.score>=0)});
+(async()=>{
+ const s1=await GG.seal(null,gbase(),Date.parse('2026-11-20'),nodeSha),s2=await GG.seal(s1,gbase(),Date.parse('2026-11-21'),nodeSha),s3=await GG.seal(s2,gbase(),Date.parse('2026-11-22'),nodeSha);
+ t('seals: an intact chain verifies',()=>{});assert.deepStrictEqual((await GG.verifyChain([s1,s2,s3],nodeSha)).ok,true);
+ const bad=JSON.parse(JSON.stringify([s1,s2,s3]));bad[1].m.salesTotal=1;const v=await GG.verifyChain(bad,nodeSha);
+ t('seals: an edited seal breaks the chain',()=>{assert.strictEqual(v.ok,false);assert.strictEqual(v.at,1)});
+ const rm=await GG.verifyChain([s1,s3],nodeSha);t('seals: a removed seal breaks the chain',()=>assert.strictEqual(rm.ok,false));
+ const D=gbase();D.sales=[];t('seals: invoices that vanish since the last seal are reported, cancelled ones are not',()=>{assert.strictEqual(GG.drift(s1,D)[0].sev,'bad');const D2=gbase();D2.void=[D2.sales.pop()];assert.strictEqual(GG.drift(s1,D2).filter(x=>/invoice/.test(x.t)).length,0)});
+ console.log(pass+' checks passed');
+})();
+
 /* Excel file */
 (async()=>{const b=makeXlsx([{name:'A',rows:[['h'],[1]]}]),u=new Uint8Array(await b.arrayBuffer());
   t('Excel file starts with PK and ends with the directory record',()=>{assert.strictEqual(u[0],0x50);assert.strictEqual(u[1],0x4b);const end=u.length-22;assert.strictEqual(u[end],0x50);assert.strictEqual(u[end+2],5);assert.strictEqual(u[end+3],6)});

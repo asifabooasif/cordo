@@ -1,6 +1,6 @@
 {
   "name": "gem-erp",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
   "description": "Gem business ERP: static web app, no build step.",
   "scripts": {
