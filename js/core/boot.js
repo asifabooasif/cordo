@@ -7,4 +7,5 @@ Cloud.start().then(()=>{
   if(typeof maybeOnboard=='function')maybeOnboard();
   GemStore.Snap.auto().catch(()=>{});
   Cloud.pill();
+  if(typeof lockInit=='function')lockInit();
 });

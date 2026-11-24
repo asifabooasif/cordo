@@ -17,6 +17,6 @@ function registerSW(){
       if(w)w.addEventListener('statechange',()=>{if(w.state==='installed'&&navigator.serviceWorker.controller)ready(w)});
     });
   }).catch(()=>{});
-  let reloaded=false;
-  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloaded)return;reloaded=true;location.reload()});
+  let reloaded=false;const had=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.addEventListener('controllerchange',()=>{if(reloaded||!had)return;reloaded=true;location.reload()});
 }

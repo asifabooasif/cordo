@@ -1,0 +1,19 @@
+/* Gem ERP :: modules/pricing.js
+   Price Advisor: compares each stone with similar stones you sold in the last 18 months (or list now) and shows the market price
+   per carat, so prices are set on facts. */
+function advData(){
+  const sold=[];D.sales.forEach(s=>{const tot=s.items.reduce((a,i)=>a+i.price,0);s.items.forEach(i=>{const z=S(i.stone),net=i.price-(tot?(s.disc||0)*i.price/tot:0);if(z.carats>0)sold.push({type:z.type,carats:z.carats,perCt:net/z.carats,date:s.date})})});
+  return{sold,listed:D.stones.filter(z=>z.status==='In stock'&&z.price>0&&z.carats>0&&z.shape!=='Rough'&&z.shape!=='Parcel').map(z=>({id:z.id,type:z.type,carats:z.carats,perCt:z.price/z.carats}))}}
+const advFor=(s,A)=>{A=A||advData();return GemCalc.advise(s,A.sold,A.listed.filter(x=>x.id!==s.id))};
+function advHtml(s){
+  if(!s||s.shape==='Rough'||s.shape==='Parcel'||!s.carats)return'';const a=advFor(s);
+  if(!a.basis)return'<p class="m">Price advisor: not enough similar stones yet.</p>';
+  const d=a.diffPct,col=d==null?'':Math.abs(d)>30?'bad':'ok';
+  return`<p class="m">Price advisor: ${a.basis==='sold'?a.nSold+' similar stone(s) sold, median '+rs(a.medSold)+' per ct (range '+rs(a.minSold)+' to '+rs(a.maxSold)+')':a.nListed+' similar stone(s) listed, median '+rs(a.medListed)+' per ct'} → about <b>${rs(Math.round(a.price/100)*100)}</b> for this stone.${d==null?'':` Your price is <b class="${col}">${d>0?d+'% above':d<0?(-d)+'% below':'at'}</b> the market.`}</p>`}
+function setMarket(id){if(!['owner','manager'].includes(myRole()))return deny();const s=S(id),a=advFor(s);if(!a.basis)return;const np=Math.round(a.price/100)*100;if(!confirm('Change the price of '+s.code+' from '+rs(s.price)+' to '+rs(np)+'?'))return;s.price=np;log(s.code+' price set to market '+rs(np));save();go()}
+pages.pricing=function(){
+  const A=advData(),types=[...new Set(D.stones.map(s=>s.type))].sort(),B=GemCalc.BANDS,cell=(t,b)=>{const m=A.sold.filter(x=>x.type===t&&x.carats>=b[1]&&x.carats<b[2]&&x.perCt>0);const L=A.listed.filter(x=>x.type===t&&x.carats>=b[1]&&x.carats<b[2]);return`<td class="r">${m.length?'<b>'+rs(Math.round(GemCalc.median(m.map(x=>x.perCt))))+'</b><br><span class="m">sold ('+m.length+')</span>':'-'}${L.length?'<br><span class="m">listed '+rs(Math.round(GemCalc.median(L.map(x=>x.perCt))))+'</span>':''}</td>`};
+  const off=D.stones.filter(s=>s.status==='In stock').map(s=>({s,a:advFor(s,A)})).filter(x=>x.a.basis&&x.a.diffPct!=null&&Math.abs(x.a.diffPct)>30).sort((p,q)=>Math.abs(q.a.diffPct)-Math.abs(p.a.diffPct)),boss=['owner','manager'].includes(myRole());
+  return`<h1>Price Advisor</h1><p class="m" style="margin-bottom:10px">Median price per carat of stones you sold in the last 18 months, by gem and weight (and what you list now). Rough stones and parcels are left out.</p>
+<div class="card"><h3>Market by gem and weight (Rs per carat)</h3>${tbl(['Gem',...B.map(b=>b[0])],types.map(t=>`<tr><td><b>${e(t)}</b></td>${B.map(b=>cell(t,b)).join('')}</tr>`))}</div>
+<div class="card"><h3>Stones priced far from the market (more than 30%)</h3>${off.length?tbl(['Stone','Gem','#Carats','#Your Rs/ct','#Market Rs/ct','#Difference','#Suggested',''],off.map(x=>`<tr><td><b>${e(x.s.code)}</b></td><td>${e(x.s.type)}</td><td class="r">${ct(x.s.carats)}</td><td class="r">${rs(Math.round(x.s.price/x.s.carats))}</td><td class="r">${rs(Math.round(x.a.perCt))}</td><td class="r ${x.a.diffPct>0?'bad':'ok'}">${x.a.diffPct>0?'+':''}${x.a.diffPct}%</td><td class="r">${rs(Math.round(x.a.price/100)*100)}</td><td><button class="sm" onclick="stoneView('${x.s.id}')">Open</button>${boss?` <button class="sm" onclick="setMarket('${x.s.id}')">Use market price</button>`:''}</td></tr>`)):'<p class="ok">All stones with enough comparisons are within 30% of the market.</p>'}<p class="m" style="margin-top:8px">A big difference is not always wrong: a fine stone can deserve more. Use this as a second opinion.</p></div>`};

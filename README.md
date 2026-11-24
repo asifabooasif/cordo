@@ -13,6 +13,40 @@ Runs in the browser, works offline, installs on a phone. No build step.
 - **Other**: camera barcode scanning in Stock Take (Chrome), first-run setup, new looks (Linen, Mocha, Midnight),
   money rounding, duplicate invoice number check with one-click fixes, problem log, automatic tests.
 
+## New in 2.4
+- **Payment receipts**: numbered receipts (RC-0001…) with the amount in words, print or WhatsApp; payments are listed on each invoice.
+- **Recurring expenses**: rent, salaries and subscriptions with a "due" alert and one-tap posting (never posted twice in a month).
+- **Birthdays and VIP**: birthday and VIP fields on each party, a 14-day birthday list with WhatsApp greetings.
+- **Commission** per salesperson on the Sales Team page (on profit or sales).
+- **Data Quality**: completeness score with the exact stones and customers to fix, and duplicate-party detection.
+- Search (Ctrl+K) also finds documents and tasks; every new quotation creates a follow-up task (switch on the Tasks page).
+
+## New in 2.3
+- **Documents**: cabinet for bills, customer ID scans, cheque copies and agreements, linked to a customer, stone or invoice (files sync like photos).
+- **Customer Profile**: totals, profit, average days to pay, open memo/requests/tasks, notes and history on one page. Opens from the Parties and Analytics pages.
+- **WhatsApp** buttons on invoices and quotations.
+- **Bank Reconciliation**: Excel or CSV bank statement matched against the cash book; add missing lines; check the adjusted balance.
+- **Sales Team**: sales, profit and discounts per person, monthly targets, discount watch (new invoices record who made them).
+- **Valuation Schedule**: printable stock list with certificates, places and values for insurers, banks and auditors.
+
+## New in 2.2
+- **Custody**: stone locations (safe, showroom, bank locker, with cutter, at lab, with customer), movement log, warnings when stones stay out of the safe too long.
+- **Stock list**: tick-boxes with bulk Move, Print labels, Add to catalogue, Excel and Change price %; location filter.
+- **Price Advisor**: market price per carat from your last 18 months of sales, with a list of stones priced far from the market.
+- **Tasks**: team follow-ups with due dates, people and customers; due tasks appear in Alerts.
+- **Cash Count**: daily count against the cash book, reason required for any difference, optional posting of the difference.
+- **Accountant Pack**: one Excel file (Analytics page) with sales, purchases, expenses, cash book, receivables and payables ageing, stock at cost and tax summary.
+
+## New in 2.1
+- **Audit Trail**: every add, change and delete with person, time, old and new value. Kept on each device and in the cloud
+  (`audit` collection: can be created, never changed or deleted). Owner, Manager and Accountant can read it. Download to Excel.
+- **Approvals**: sales staff request an invoice cancellation or customer return; owner/manager approves or rejects.
+- **Import Data**: stones and parties from Excel or CSV, with column matching, checks, preview and an automatic restore point.
+- **Reminders**: overdue customers, cheques and memo returns with ready WhatsApp / email messages.
+- **Screen lock**: PIN on this device, locks when idle or when the app opens.
+- **Speed**: stock list shows 150 rows and loads more on request (tested with 5,000+ stones).
+- **Re-publish `firestore.rules`** after updating (it now includes the audit collection).
+
 ## One-time Firebase setup (project `cordo-gem`)
 1. **Authentication** > Get started > Sign-in method > enable **Google**.
 2. Authentication > Settings > **Authorised domains** > add your GitHub Pages domain (for example `yourname.github.io`).

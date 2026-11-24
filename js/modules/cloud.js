@@ -74,6 +74,7 @@ async function signOut(wipe){
   try{await GemStore.flush()}catch(x){}
   try{if(auth)await auth.signOut()}catch(x){}
   try{await GemDB.del('kv','session')}catch(x){}
+  try{localStorage.removeItem('gem_lock')}catch(x){}
   if(wipe){try{indexedDB.deleteDatabase('gem_erp');localStorage.clear()}catch(x){}}
   location.reload()}
 /* ---------- sync ---------- */
@@ -145,8 +146,21 @@ async function fetchMissing(){
       ds=await Promise.all(Array.from({length:n},(_,i)=>db.doc(`companies/${CID}/media/${h}__${i}`).get()));GemStore.putMedia(h,ds.map(d=>d.exists?d.data().d:'').join(''))}
     const dl=dlgEl();if(typeof go==='function'&&!(dl&&dl.open))go()}catch(x){}
   fetching=false}
+/* ---------- audit trail upload (append-only collection; entries can be created but never changed) ---------- */
+let audQ=[],audT=0,audBusy=false;
+GemDB.get('kv','audq').then(a=>{if(a&&a.length){audQ=a.concat(audQ)}}).catch(()=>{});
+function audit(entries){audQ.push(...entries);GemDB.set('kv','audq',audQ.slice(-3000)).catch(()=>{});clearTimeout(audT);audT=setTimeout(audFlush,2500)}
+async function audFlush(){
+  if(audBusy)return;if(!canPush()||!navigator.onLine||!audQ.length){if(audQ.length)audT=setTimeout(audFlush,20000);return}
+  audBusy=true;
+  try{while(audQ.length){const part=audQ.slice(0,400),b=db.batch();part.forEach(x=>b.set(db.doc(`companies/${CID}/audit/${x.id}`),x));await b.commit();audQ=audQ.slice(part.length);GemDB.set('kv','audq',audQ).catch(()=>{})}}
+  catch(err){audT=setTimeout(audFlush,30000)}
+  audBusy=false}
+async function auditLoad(n){
+  if(!db||!user||!window.Me||Me.cached||Me.local||!navigator.onLine||!['owner','manager','accountant'].includes(Me.role))return[];
+  try{const q=await db.collection(`companies/${CID}/audit`).orderBy('t','desc').limit(n||500).get();return q.docs.map(d=>d.data())}catch(x){return[]}}
 function retry(){if(!user||!auth)return;Object.keys(D._m||{}).forEach(k=>{if((D._m[k]||0)>(D._sy[k]||0))pend.add(k)});onAuth(user,null)}
-addEventListener('online',()=>{status='connecting';pill();retry()});addEventListener('offline',()=>{status='offline';pill()});
+addEventListener('online',()=>{status='connecting';pill();retry();audFlush()});addEventListener('offline',()=>{status='offline';pill()});
 /* ---------- status pill and menu ---------- */
 function pill(){
   const sb=document.querySelector('.sb');let p=document.getElementById('cpill');
@@ -155,7 +169,7 @@ function pill(){
   p.className=status;p.innerHTML=`<span>${s[0]}</span><b>${s[1]}</b><small>${window.Me&&Me.email?e(Me.email)+' · '+e(ROLES[Me.role]||Me.role):'Local mode'}</small>`}
 function menu(){
   const unsynced=Object.keys(D._m||{}).filter(k=>(D._m[k]||0)>(D._sy[k]||0)).length;
-  $('#dlg').innerHTML=`<h3>Account &amp; sync</h3><p><b>${e((window.Me&&Me.name)||'Local mode')}</b><br><span class="m">${e((window.Me&&Me.email)||'No sign-in on this device')}${window.Me&&Me.role?' · '+e(ROLES[Me.role]||Me.role):''}</span></p><p class="m" style="margin:10px 0">Status: <b>${e(status)}</b>${lastSync?' · last contact '+new Date(lastSync).toLocaleTimeString():''}<br>${unsynced?unsynced+' collection(s) waiting to upload':'Everything on this device is in the cloud'}${errMsg?'<br><span class="bad">'+e(errMsg)+'</span>':''}</p><div class="dlgbar">${CFG.enabled&&auth&&user?'<button onclick="Cloud.retry();dlg.close()">Sync now</button><button onclick="Cloud.signOut()">Sign out</button><button onclick="if(confirm(\'Sign out and remove ALL data stored on this device? Data already in the cloud is kept.\'))Cloud.signOut(true)">Sign out &amp; clear device</button>':''}<button class="b1" onclick="dlg.close()">Close</button></div>`;$('#dlg').showModal()}
+  $('#dlg').innerHTML=`<h3>Account &amp; sync</h3><p><b>${e((window.Me&&Me.name)||'Local mode')}</b><br><span class="m">${e((window.Me&&Me.email)||'No sign-in on this device')}${window.Me&&Me.role?' · '+e(ROLES[Me.role]||Me.role):''}</span></p><p class="m" style="margin:10px 0">Status: <b>${e(status)}</b>${lastSync?' · last contact '+new Date(lastSync).toLocaleTimeString():''}<br>${unsynced?unsynced+' collection(s) waiting to upload':'Everything on this device is in the cloud'}${errMsg?'<br><span class="bad">'+e(errMsg)+'</span>':''}</p><div class="dlgbar"><button onclick="dlg.close();lockNow()">🔒 Lock now</button>${CFG.enabled&&auth&&user?'<button onclick="Cloud.retry();dlg.close()">Sync now</button><button onclick="Cloud.signOut()">Sign out</button><button onclick="if(confirm(\'Sign out and remove ALL data stored on this device? Data already in the cloud is kept.\'))Cloud.signOut(true)">Sign out &amp; clear device</button>':''}<button class="b1" onclick="dlg.close()">Close</button></div>`;$('#dlg').showModal()}
 /* ---------- Team & Access page ---------- */
 const OPTS=Object.entries(ROLES).map(([k,v])=>`<option value="${k}">${e(v)}</option>`).join('');
 pages.team=function(){setTimeout(renderTeam,0);return`<h1>Team &amp; Access</h1><div class="card" id="tm"><p class="m">Loading…</p></div><div class="card"><h3>Approval rule</h3><label class="m">Sales staff can give a discount up to <input type="number" style="width:80px" value="${D.discLimit==null?5:D.discLimit}" onchange="D.discLimit=Math.max(0,+this.value||0);save()"> % of the invoice. Above that a manager or owner must create the invoice.</label></div><div class="card"><h3>What each role can do</h3>${tbl(['Role','Can do'],[['Owner','Everything, including managing this team and restoring backups'],['Manager','Everything except managing the team'],['Sales staff','Stock, sales, quotations, memo, requests, parties and the catalogue. No cost, profit, cash or supplier pages. Discount limit above.'],['Accountant (view only)','Can open every page and export reports but cannot change anything']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`))}<p class="m" style="margin-top:8px">The app hides what a role should not see. The cloud rules (firestore.rules) enforce who may read and write.</p></div>`};
@@ -173,5 +187,5 @@ async function addMember(){
   try{await db.doc(`companies/${CID}/members/${em}`).set({email:em,name:nm,role:rl,addedBy:Me.email,t:Date.now()});log('Team: added '+em+' as '+rl);save();renderTeam()}catch(err){alert(friendly(err))}}
 async function setRole(id,rl){try{await db.doc(`companies/${CID}/members/${id}`).update({role:rl});log('Team: '+id+' is now '+rl);save();renderTeam()}catch(err){alert(friendly(err))}}
 async function removeMember(id){if(!confirm('Remove '+id+'? They will no longer be able to open the company.'))return;try{await db.doc(`companies/${CID}/members/${id}`).delete();log('Team: removed '+id);save();renderTeam()}catch(err){alert(friendly(err))}}
-return{start,changed,signOut,retry,addMember,setRole,removeMember,pill,get status(){return status},get enabled(){return CFG.enabled},get pending(){return pend.size}};
+return{start,changed,audit,auditLoad,signOut,retry,addMember,setRole,removeMember,pill,get status(){return status},get enabled(){return CFG.enabled},get pending(){return pend.size}};
 })();

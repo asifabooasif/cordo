@@ -1,7 +1,21 @@
 /* Gem ERP :: modules/system.js
    System Health page (storage, restore points, cloud status, problem log, what's new), error capture and the first-run setup. */
-const APP_VERSION='2.0.0';
+const APP_VERSION='2.4.0';
 const CHANGES=[
+ ['2.4.0','Numbered payment receipts (print or WhatsApp) with the amount in words, listed on every invoice.'],
+ ['2.4.0','Recurring expenses (rent, salaries) that you post with one tap when due, customer birthdays and VIP tags with WhatsApp greetings, and commission per salesperson.'],
+ ['2.4.0','Data Quality score with the exact items to fix, search that also finds documents and tasks, and an automatic follow-up task for every quotation.'],
+ ['2.3.0','Documents: a cabinet for bills, ID scans, cheque copies and agreements linked to a customer, stone or invoice.'],
+ ['2.3.0','Customer Profile: everything about a customer on one page, with notes, history and open items. WhatsApp buttons on invoices and quotations.'],
+ ['2.3.0','Bank Reconciliation from an Excel or CSV statement, Sales Team report with targets and discount watch, and a printable Stock Valuation Schedule.'],
+ ['2.2.0','Custody: every stone has a location (safe, showroom, with cutter, at lab, with customer) and a movement log; the Custody page warns when stones stay out too long.'],
+ ['2.2.0','Stock list: tick stones, then move, print labels, add to the catalogue, export to Excel or change prices by a percent. New location filter.'],
+ ['2.2.0','Price Advisor: shows the market price per carat from your own sales and warns about stones priced far from it.'],
+ ['2.2.0','Tasks and follow-ups for the team, a daily Cash Count with reasons for differences, and an Accountant Pack Excel with ageing and tax.'],
+ ['2.1.0','Audit Trail: every add, change and delete is recorded with the person, time and old and new values (kept on every device and in the cloud, cannot be edited).'],
+ ['2.1.0','Approvals: sales staff request an invoice cancellation or customer return and the owner or manager approves it.'],
+ ['2.1.0','Import Data: bring stones and parties from Excel or CSV with column matching, checks, preview and an automatic restore point.'],
+ ['2.1.0','Reminders: overdue customers, cheques and memo returns with a ready WhatsApp or email message. Screen lock with a PIN. Stock list stays fast with thousands of stones.'],
  ['2.0.0','Safer storage: the company record now lives in a proper database on the device (no 5 MB limit), photos are stored separately, and a restore point is made every day.'],
  ['2.0.0','Google sign-in and cloud sync through Firebase, so phone and computer share the same data. Works offline and catches up later.'],
  ['2.0.0','Team roles: Owner, Manager, Sales staff, Accountant (view only), with a discount approval limit for sales staff.'],
@@ -17,6 +31,7 @@ addEventListener('unhandledrejection',ev=>logErr('Promise: '+((ev.reason&&ev.rea
 pages.system=function(){setTimeout(sysFill,0);
   const q=window.__quota||0,u=window.__usage||0,c=(()=>{try{checkHtml();return window._chk||{bad:0,wn:0}}catch(x){return{bad:'?',wn:'?'}}})();
   return`<h1>System Health</h1><div class="kp"><div class="k"><small>Version</small><b>${APP_VERSION}</b></div><div class="k"><small>Storage on this device</small><b>${(u/1e6).toFixed(1)} MB</b></div><div class="k"><small>Cloud</small><b>${Cloud.enabled?e(Cloud.status):'off'}</b></div><div class="k"><small>Data check</small><b class="${c.bad?'bad':'ok'}">${c.bad||c.wn?c.bad+' errors, '+c.wn+' warnings':'All clear'}</b></div></div>
+${typeof lockCard=='function'?lockCard():''}
 <div class="card"><h3>Restore points</h3><p class="m" style="margin-bottom:8px">A copy of all your data is kept automatically once a day (last 30). Restoring never deletes the current data: it makes a restore point first.</p><div class="bar"><button class="b1" onclick="snapNow()">Create restore point now</button></div><div id="snl"><p class="m">Loading…</p></div></div>
 <div class="card"><h3>Problems recorded</h3><div id="erl"><p class="m">Loading…</p></div></div>
 <div class="card"><h3>What's new</h3>${CHANGES.map(x=>`<p style="margin:6px 0"><b>${x[0]}</b> &nbsp;${e(x[1])}</p>`).join('')}</div>

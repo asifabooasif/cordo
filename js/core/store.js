@@ -10,7 +10,7 @@ const GemStore=(function(){
   const {Media,mergeArr,canMerge}=GemSync;
   const MEDIA=window.__MEDIA||{};let PM=[];
   const GM=Media(MEDIA,(h,v)=>PM.push([h,v]));
-  const LS={};let dirty=false,tm=0,fl=Promise.resolve(),warned=false,legacy=false;
+  const LS={};let dirty=false,tm=0,fl=Promise.resolve(),warned=false,legacy=false,skipAud=false;
   const boot=window.__BOOT_DATA;
   if(typeof boot==='string'){try{D=JSON.parse(boot)}catch(x){D=null}}
   if(!D){try{const o=JSON.parse(localStorage.getItem(K));if(o&&o.stones){D=o;legacy=true}}catch(x){}}
@@ -25,19 +25,21 @@ const GemStore=(function(){
   function save(){if(window.__ro){roBlock();return}dirty=true;clearTimeout(tm);tm=setTimeout(flush,300)}
   function flush(){
     clearTimeout(tm);if(!dirty)return fl;dirty=false;
-    const now=Date.now(),ch=[],ks=keys();
-    ks.forEach(k=>{const s=GM.ser(D[k]);if(s!==LS[k]){if(s===undefined)delete LS[k];else LS[k]=s;D._m[k]=now;ch.push(k)}});
+    const now=Date.now(),ch=[],ks=keys(),aud=[],who=(window.Me&&Me.email)||'local';
+    ks.forEach(k=>{const s=GM.ser(D[k]);if(s!==LS[k]){const o=LS[k];if(s===undefined)delete LS[k];else{LS[k]=s;if(!skipAud)GemAudit.diff(k,o,s,who,now).forEach(x=>aud.push(x))}D._m[k]=now;ch.push(k)}});
+    if(skipAud){aud.push(GemAudit.note('All data was replaced (restore, import or reset)',who,now));skipAud=false}
     Object.keys(LS).forEach(k=>{if(!ks.includes(k))delete LS[k]});
     const media=PM.splice(0);
     if(window.__idbOK===false){try{localStorage.setItem(K,JSON.stringify(D))}catch(x){storeFail(x)}}
     else{const snap=pack();fl=fl.then(()=>media.length?GemDB.setMany('files',media):0).then(()=>GemDB.set('kv','company',snap)).catch(storeFail)}
+    if(aud.length){const A=aud.slice(0,500);if(window.__idbOK!==false)fl=fl.then(()=>GemDB.get('kv','audit')).then(a=>GemDB.set('kv','audit',((a||[]).concat(A)).slice(-5000))).catch(()=>{});if(typeof Cloud!=='undefined')Cloud.audit(A)}
     if(ch.length&&typeof Cloud!=='undefined')Cloud.changed(ch);
     return fl}
   function persistMeta(){if(window.__idbOK===false)return fl;const snap=pack();fl=fl.then(()=>GemDB.set('kv','company',snap)).catch(storeFail);return fl}
   function roBlock(){toast('View-only access: that change was not saved.');const n=JSON.parse(pack());GM.hydrate(n);D=n}
   addEventListener('pagehide',flush);document.addEventListener('visibilitychange',()=>{if(document.hidden)flush()});
   /* Replace everything (restore a backup or restore point). Every collection counts as changed, so the cloud copy follows. */
-  async function adopt(o,keepSeed){GM.hydrate(o);D=o;D._m={};D._sy={};D._bi={};if(!keepSeed)delete D._seed;Object.keys(LS).forEach(k=>delete LS[k]);dirty=true;await flush();ensureData();return flush()}
+  async function adopt(o,keepSeed){GM.hydrate(o);D=o;D._m={};D._sy={};D._bi={};if(!keepSeed)delete D._seed;Object.keys(LS).forEach(k=>delete LS[k]);skipAud=true;dirty=true;await flush();ensureData();return flush()}
   async function reset(){return adopt(seed())}
   /* Cloud calls these. */
   const ids=v=>canMerge(v)?v.map(x=>x.id):null;
@@ -67,4 +69,4 @@ const GemStore=(function(){
   return{save,flush,adopt,reset,applyKey,mergeKey,markSynced,persistMeta,putMedia,missingMedia,json:k=>LS[k],keys,Snap,media:MEDIA,usage,wasLegacy:legacy};
 })();
 /* Makes sure every collection exists and adds the one-time starter records. Safe to run on every render. */
-function ensureData(){D.jobs=D.jobs||[];D.exp=D.exp||[];D.chq=D.chq||[];D.memo=D.memo||[];D.cn=D.cn||[];D.quotes=D.quotes||[];D.dn=D.dn||[];D.minn=D.minn||[];D.prom=D.prom||[];D.wants=D.wants||[];D.tiers=D.tiers||[{n:'Retail',p:0},{n:'Wholesale',p:-10},{n:'Dealer',p:-15}];D.cash=D.cash||[];if(!D.v2){D.v2=1;D.parties.push({id:'p9',name:'Beruwala Cutting Works',type:'Cutter',phone:'077 555 0199'});const s={id:'s9',code:'GEM-'+String(D.stones.length+1).padStart(4,'0'),type:'Blue Sapphire',shape:'Rough',carats:8.5,color:'Blue',origin:'Ratnapura',treatment:'Natural unheated',cert:'',cost:120000,price:0,status:'In stock',supplier:'p1',date:today()};D.stones.push(s);D.purchases.push({id:uid(),date:s.date,party:'p1',stone:s.id,cost:s.cost,paid:60000});save()}}
+function ensureData(){D.jobs=D.jobs||[];D.exp=D.exp||[];D.chq=D.chq||[];D.memo=D.memo||[];D.cn=D.cn||[];D.quotes=D.quotes||[];D.dn=D.dn||[];D.minn=D.minn||[];D.prom=D.prom||[];D.wants=D.wants||[];D.tiers=D.tiers||[{n:'Retail',p:0},{n:'Wholesale',p:-10},{n:'Dealer',p:-15}];D.cash=D.cash||[];D.appr=D.appr||[];D.tasks=D.tasks||[];D.moves=D.moves||[];D.counts=D.counts||[];D.docs=D.docs||[];D.recur=D.recur||[];if(!D.v2){D.v2=1;D.parties.push({id:'p9',name:'Beruwala Cutting Works',type:'Cutter',phone:'077 555 0199'});const s={id:'s9',code:'GEM-'+String(D.stones.length+1).padStart(4,'0'),type:'Blue Sapphire',shape:'Rough',carats:8.5,color:'Blue',origin:'Ratnapura',treatment:'Natural unheated',cert:'',cost:120000,price:0,status:'In stock',supplier:'p1',date:today()};D.stones.push(s);D.purchases.push({id:uid(),date:s.date,party:'p1',stone:s.id,cost:s.cost,paid:60000});save()}}

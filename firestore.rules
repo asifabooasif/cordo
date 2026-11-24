@@ -54,6 +54,11 @@ service cloud.firestore {
         allow read: if isMember(cid);
         allow write: if canWrite(cid);
       }
+      // audit trail: can be added by anyone who can write, read by owner/manager/accountant, never changed or deleted
+      match /audit/{doc} {
+        allow read: if isMember(cid) && role(cid) in ['owner', 'manager', 'accountant'];
+        allow create: if canWrite(cid);
+      }
       match /mediaidx/{doc} {
         allow read: if isMember(cid);
         allow write: if canWrite(cid);

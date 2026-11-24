@@ -44,3 +44,5 @@ body.ro .qa,body.ro .bar .b1{display:none!important}
 .camBtn{background:var(--acs)}
 @media print{#gate,#cpill,#toast,#lbx{display:none!important}}
 html:root[data-look=mocha] #live,html:root[data-look=midnight] #live,html:root[data-look=mocha] .bell,html:root[data-look=midnight] .bell{background:var(--s);color:var(--t);border-color:var(--bd)}
+#lockscr{display:none;position:fixed;inset:0;z-index:190;place-items:center;background:radial-gradient(circle at 30% 20%,#efe4d0,#f6efe3 45%,#e9dcc4);padding:20px}#lockscr.on{display:grid}#lockscr .gcard input{background:#fff;color:#33261a;border:1px solid #e6d8bf;border-radius:14px;padding:10px}
+@media print{#lockscr{display:none!important}}
